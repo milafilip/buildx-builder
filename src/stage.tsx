@@ -39,7 +39,16 @@ export default class Stage extends React.Component {
     this.renderer.render(this.scene, this.camera);
   }
 
+  handleMouseMove({ clientX: x, clientY: y }) {
+    console.log({ x, y });
+  }
+
   render() {
-    return <div ref={el => (this.container = el)} />;
+    return (
+      <div
+        ref={el => (this.container = el)}
+        onMouseMove={this.handleMouseMove.bind(this)}
+      />
+    );
   }
 }
