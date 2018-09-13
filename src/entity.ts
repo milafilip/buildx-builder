@@ -6,9 +6,11 @@ export default class Entity {
     color: "red",
     wireframe: true
   });
-  mesh;
+
+  mesh: THREE.Mesh;
 
   constructor() {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh.translateY(0.5);
   }
 }
