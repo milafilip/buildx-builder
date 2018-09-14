@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export default class Entity {
+export default class Model {
   private geometry = new THREE.BoxGeometry(1, 1, 1);
   private material = new THREE.MeshBasicMaterial({
     color: "red",

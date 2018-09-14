@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as THREE from "three";
-import Entity from "./entity";
 import Ground from "./ground";
+import Model from "./model";
 
 export default class Stage extends React.Component {
   private container;
@@ -11,8 +11,8 @@ export default class Stage extends React.Component {
   private raycaster = new THREE.Raycaster();
   private width = window.innerWidth;
   private height = window.innerHeight;
-  private mouseX;
-  private mouseY;
+  private mousePosition = new THREE.Vector2();
+  private model = new Model().mesh;
 
   componentDidMount() {
     this.camera = new THREE.PerspectiveCamera(
@@ -32,7 +32,7 @@ export default class Stage extends React.Component {
     this.container.appendChild(this.renderer.domElement);
 
     this.scene.add(new Ground().mesh);
-    this.scene.add(new Entity().mesh);
+    this.scene.add(this.model);
 
     window.addEventListener("resize", this.handleResize.bind(this));
     this.handleResize.bind(this);
@@ -48,9 +48,17 @@ export default class Stage extends React.Component {
   }
 
   handleMouseMove({ clientX, clientY }) {
-    this.mouseX = clientX;
-    this.mouseY = clientY;
-    console.log(this.mouseX, this.mouseY);
+    this.mousePosition.x = (clientX / this.width) * 2 - 1;
+    this.mousePosition.y = (clientY / this.height) * 2 - 1;
+
+    this.raycaster.setFromCamera(this.mousePosition, this.camera);
+
+    let intersects = this.raycaster.intersectObject(this.model);
+    if (intersects.length > 0) {
+      console.log("INTERSECTION");
+    } else {
+      console.log("NO INTERSECTION");
+    }
   }
 
   render() {
