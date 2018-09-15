@@ -1,5 +1,7 @@
 import * as React from "react";
 import * as THREE from "three";
+import BreezeBlock from "./breeze_block";
+import Brick from "./brick";
 import Ground from "./ground";
 import Model from "./model";
 
@@ -33,6 +35,14 @@ export default class Stage extends React.Component {
 
     this.scene.add(new Ground().mesh);
     this.scene.add(this.model);
+
+    const block = new BreezeBlock();
+    block.move();
+    this.scene.add(block.mesh);
+
+    const brick = Brick();
+    brick.move();
+    this.scene.add(brick.mesh);
 
     window.addEventListener("resize", this.handleResize.bind(this));
     this.handleResize.bind(this);
