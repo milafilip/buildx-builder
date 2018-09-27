@@ -15,7 +15,7 @@
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
     "reflect-metadata": "^0.1.12",
-    "three": "^0.96.0"
+    "three": "^0.97.0"
   },
   "devDependencies": {
     "@types/three": "^0.92.18",
