@@ -6,12 +6,13 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html --public-url=.",
-    "predeploy": "rm -rf dist && yarn build",
+    "clean": "rm -rf .cache dist",
+    "predeploy": "yarn clean && yarn build",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "John Rees <john@bitsushi.com>",
+  "license": "MPL-2.0",
   "dependencies": {
     "@most/core": "^1.3.2",
     "@most/scheduler": "^1.2.1",
