@@ -1,51 +1,59 @@
 import * as React from "react";
 import * as THREE from "three";
-import BreezeBlock from "./breeze_block";
-import Brick from "./brick";
-import Ground from "./ground";
 import Model from "./model";
 
-export default class Stage extends React.Component {
-  private container;
+type IProps = {
+  bgColor: number | string;
+  antialias: boolean;
+  cameraFOV: number;
+  cameraNear: number;
+  cameraFar: number;
+};
+export default class Stage extends React.Component<IProps> {
+  static defaultProps: IProps = {
+    antialias: true,
+    bgColor: 0xcccccc,
+    cameraFar: 1000,
+    cameraFOV: 90,
+    cameraNear: 0.1
+  };
+
   private camera;
+  private container;
+  private height = window.innerHeight;
+  private model = new Model().mesh;
+  private mousePosition = new THREE.Vector2();
+  private raycaster = new THREE.Raycaster();
   private renderer;
   private scene = new THREE.Scene();
-  private raycaster = new THREE.Raycaster();
   private width = window.innerWidth;
-  private height = window.innerHeight;
-  private mousePosition = new THREE.Vector2();
-  private model = new Model().mesh;
+
+  constructor(props, defaultProps) {
+    super(props, defaultProps);
+    this.handleResize = this.handleResize.bind(this);
+  }
 
   componentDidMount() {
     this.camera = new THREE.PerspectiveCamera(
-      90,
+      this.props.cameraFOV,
       this.width / this.height,
-      0.1,
-      1000
+      this.props.cameraNear,
+      this.props.cameraFar
     );
     this.camera.position.set(3, 3, 3);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true
+      antialias: this.props.antialias
     });
-    this.renderer.setClearColor(0xcccccc);
+    this.renderer.setClearColor(this.props.bgColor);
 
     this.container.appendChild(this.renderer.domElement);
 
-    this.scene.add(new Ground().mesh);
     this.scene.add(this.model);
 
-    const block = new BreezeBlock();
-    block.move();
-    this.scene.add(block.mesh);
-
-    const brick = Brick();
-    brick.move();
-    this.scene.add(brick.mesh);
-
-    window.addEventListener("resize", this.handleResize.bind(this));
-    this.handleResize.bind(this);
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
   }
 
   handleResize() {
