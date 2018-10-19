@@ -9,6 +9,17 @@ type IProps = {
   cameraNear: number;
   cameraFar: number;
 };
+
+var lineMaterial = new THREE.LineBasicMaterial({
+  color: 0x0000ff
+});
+var lineGeometry = new THREE.Geometry();
+lineGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+lineGeometry.vertices.push(new THREE.Vector3(1, 1, 0));
+lineGeometry.vertices.push(new THREE.Vector3(0, 1, 0));
+
+var line = new THREE.Line(lineGeometry, lineMaterial);
+
 export default class Stage extends React.Component<IProps> {
   static defaultProps: IProps = {
     antialias: true,
@@ -27,6 +38,7 @@ export default class Stage extends React.Component<IProps> {
   private renderer;
   private scene = new THREE.Scene();
   private width = window.innerWidth;
+  private intersections = [];
 
   constructor(props, defaultProps) {
     super(props, defaultProps);
@@ -51,6 +63,7 @@ export default class Stage extends React.Component<IProps> {
     this.container.appendChild(this.renderer.domElement);
 
     this.scene.add(this.model);
+    this.scene.add(line);
 
     window.addEventListener("resize", this.handleResize);
     this.handleResize();
@@ -71,9 +84,29 @@ export default class Stage extends React.Component<IProps> {
 
     this.raycaster.setFromCamera(this.mousePosition, this.camera);
 
-    let intersects = this.raycaster.intersectObject(this.model);
-    if (intersects.length > 0) {
-      console.log("INTERSECTION");
+    this.intersections = this.raycaster.intersectObject(this.model);
+    if (this.intersections.length > 0) {
+      const {
+        point,
+        face,
+        object: {
+          geometry: { vertices }
+        }
+      } = this.intersections[0];
+
+      line.geometry.vertices[0] = vertices[face.a];
+      line.geometry.vertices[1] = vertices[face.b];
+      line.geometry.vertices[2] = vertices[face.c];
+
+      line.geometry.verticesNeedUpdate = true;
+      this.renderer.render(this.scene, this.camera);
+      // console.log(
+      //   vertices[face.a].clone().multiplyScalar(face.normal.x),
+      //   vertices[face.b].clone().multiplyScalar(face.normal.y),
+      //   vertices[face.c].clone().multiplyScalar(face.normal.z)
+      // );
+      // console.log(this.intersections[0]);
+      // console.log({ face, vertices });
     } else {
       console.log("NO INTERSECTION");
     }
