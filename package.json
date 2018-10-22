@@ -19,6 +19,7 @@
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
     "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.3.3",
     "three": "^0.97.0"
   },
   "devDependencies": {
